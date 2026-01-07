@@ -1,14 +1,13 @@
-/* ======================================================
-   BioNurse Pro – Global Stylesheet
+/* =========================================================
+   BioNurse Pro – Global Styles
    Author: Akin S. Sokpah
-   Purpose: Professional, modern, SEO-friendly UI
-====================================================== */
+   Level: Advanced / Production UI
+========================================================= */
 
-/* ================= RESET ================= */
-
-*,
-*::before,
-*::after {
+/* -------------------------
+   RESET & BASE
+-------------------------- */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -19,14 +18,140 @@ html {
 }
 
 body {
-  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont;
-  background: linear-gradient(135deg, #020617, #020617, #0f172a);
-  color: #e5e7eb;
-  line-height: 1.6;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #eaf2ff;
   min-height: 100vh;
+  line-height: 1.6;
 }
 
-/* ================= GLOBAL UTILITIES ================= */
+/* -------------------------
+   LINKS & BUTTONS
+-------------------------- */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1e90ff, #63b3ff);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-block;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(30,144,255,0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(30,144,255,0.45);
+}
+
+.btn-outline {
+  border: 2px solid #1e90ff;
+  padding: 12px 26px;
+  border-radius: 12px;
+  color: #1e90ff;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn-outline:hover {
+  background: #1e90ff;
+  color: #fff;
+}
+
+.big {
+  font-size: 1.1rem;
+}
+
+/* -------------------------
+   NAVBAR
+-------------------------- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(15px);
+  background: rgba(15, 32, 39, 0.8);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.logo span {
+  color: #1e90ff;
+}
+
+.nav-container nav a {
+  margin-left: 20px;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+.nav-container nav a:hover {
+  opacity: 1;
+}
+
+/* -------------------------
+   HERO
+-------------------------- */
+.hero {
+  padding: 120px 20px 100px;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 820px;
+  margin: auto;
+}
+
+.hero h2 {
+  font-size: 2.6rem;
+  margin-bottom: 18px;
+  font-weight: 800;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.hero-buttons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* -------------------------
+   SECTIONS
+-------------------------- */
+.section {
+  padding: 90px 20px;
+}
+
+.section h3 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
 
 .center {
   text-align: center;
@@ -34,248 +159,154 @@ body {
 
 .center-text {
   text-align: center;
+  max-width: 800px;
+  margin: auto;
 }
 
 .small {
-  font-size: 0.85rem;
-  opacity: 0.85;
+  font-size: 0.9rem;
+  opacity: 0.8;
 }
 
-.big {
-  font-size: 1.1rem;
-  padding: 14px 28px;
+.note {
+  opacity: 0.8;
+  font-style: italic;
 }
 
-.highlight {
-  border: 1px solid #38bdf8;
-  background: linear-gradient(
-    135deg,
-    rgba(56, 189, 248, 0.15),
-    rgba(37, 99, 235, 0.15)
-  );
-}
-
-/* ================= NAVBAR ================= */
-
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: rgba(2, 6, 23, 0.85);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.nav-container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #38bdf8;
-}
-
-.logo span {
-  color: #ffffff;
-}
-
-.nav-btn {
-  background: linear-gradient(135deg, #2563eb, #38bdf8);
-  color: white;
-  padding: 8px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.nav-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
-}
-
-/* ================= HERO SECTION ================= */
-
-.hero {
-  padding: 90px 20px 70px;
-  background:
-    radial-gradient(circle at top, rgba(56, 189, 248, 0.15), transparent 60%),
-    radial-gradient(circle at bottom, rgba(37, 99, 235, 0.2), transparent 60%);
-}
-
-.hero-content {
-  max-width: 900px;
-  margin: auto;
-  text-align: center;
-}
-
-.hero h2 {
-  font-size: 2.6rem;
-  font-weight: 800;
-  margin-bottom: 20px;
-  background: linear-gradient(135deg, #38bdf8, #60a5fa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.hero p {
-  font-size: 1.05rem;
-  max-width: 700px;
-  margin: auto;
-  opacity: 0.95;
-}
-
-.hero-buttons {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-/* ================= BUTTONS ================= */
-
-.btn-primary {
-  background: linear-gradient(135deg, #2563eb, #38bdf8);
-  color: white;
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: 600;
-  padding: 12px 26px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(56, 189, 248, 0.5);
-}
-
-.btn-outline {
-  border: 1px solid #38bdf8;
-  color: #38bdf8;
-  text-decoration: none;
-  border-radius: 10px;
-  padding: 12px 26px;
-  font-weight: 600;
-  transition: background 0.2s, color 0.2s;
-}
-
-.btn-outline:hover {
-  background: #38bdf8;
-  color: #020617;
-}
-
-/* ================= SECTIONS ================= */
-
-.section {
-  max-width: 1200px;
-  margin: auto;
-  padding: 70px 20px;
-}
-
-.section h3 {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 40px;
-  color: #e0f2fe;
-}
-
-.glass {
-  background: rgba(15, 23, 42, 0.65);
-  border-radius: 24px;
-  margin: 40px auto;
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(148, 163, 184, 0.12);
-}
-
-/* ================= GRID & CARDS ================= */
-
+/* -------------------------
+   GRID & CARDS
+-------------------------- */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
+  gap: 26px;
+  max-width: 1100px;
+  margin: auto;
 }
 
 .card {
-  background: rgba(2, 6, 23, 0.85);
-  padding: 24px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
   border-radius: 18px;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  transition: transform 0.25s, box-shadow 0.25s;
+  padding: 28px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(2, 132, 199, 0.25);
+  background: rgba(255,255,255,0.12);
 }
 
 .card h4 {
-  font-size: 1.15rem;
-  margin-bottom: 10px;
-  color: #7dd3fc;
-}
-
-.card p {
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-/* ================= FAQ ================= */
-
-.faq .card {
-  background: rgba(15, 23, 42, 0.75);
-}
-
-/* ================= FOOTER ================= */
-
-.footer {
-  padding: 40px 20px;
-  text-align: center;
-  background: #020617;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.footer p {
-  font-size: 0.9rem;
-  opacity: 0.85;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 768px) {
-  .hero h2 {
-    font-size: 2.1rem;
-  }
-
-  .section h3 {
-    font-size: 1.7rem;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-  }
-}
-
-/* ================= ANIMATIONS ================= */
-
-@keyframes float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+  font-size: 1.2rem;
+  margin-bottom: 12px;
 }
 
 .highlight {
-  animation: float 5s ease-in-out infinite;
+  border: 1px solid rgba(30,144,255,0.6);
+  box-shadow: 0 0 30px rgba(30,144,255,0.2);
+}
+
+/* -------------------------
+   GLASS SECTION
+-------------------------- */
+.glass {
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(18px);
+}
+
+/* -------------------------
+   AI ASSISTANT
+-------------------------- */
+.ai-box {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 340px;
+  max-height: 520px;
+  background: rgba(20, 30, 48, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.ai-header {
+  padding: 14px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1e90ff, #63b3ff);
+  text-align: center;
+}
+
+.ai-messages {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.ai-msg {
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.ai-msg.bot {
+  background: rgba(255,255,255,0.12);
+}
+
+.ai-msg.user {
+  background: rgba(30,144,255,0.35);
+  text-align: right;
+}
+
+.ai-input {
+  display: flex;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.ai-input input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+.ai-input button {
+  background: #1e90ff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* -------------------------
+   FOOTER
+-------------------------- */
+.footer {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(0,0,0,0.35);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* -------------------------
+   RESPONSIVE
+-------------------------- */
+@media (max-width: 768px) {
+  .hero h2 {
+    font-size: 2rem;
+  }
+
+  .ai-box {
+    width: 92%;
+    right: 4%;
+  }
 }
