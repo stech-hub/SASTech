@@ -1,43 +1,74 @@
+/* =========================================================
+   BioNurse Pro – AI Assistant API
+   Serverless Function (Vercel)
+   Author: Akin S. Sokpah
+========================================================= */
+
+import OpenAI from "openai";
+
+/* ================= OPENAI CLIENT ================= */
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+/* ================= MAIN HANDLER ================= */
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const { message } = req.body;
-
-  if (!message) {
-    return res.status(400).json({ error: "No message" });
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
   }
 
   try {
-    const response = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a customer assistant for BioNurse Pro and Akin Sokpah. Be polite and guide users to WhatsApp when needed."
-            },
-            { role: "user", content: message }
-          ]
-        })
-      }
-    );
+    const { messages } = req.body;
 
-    const data = await response.json();
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({
+        error: "Invalid messages format"
+      });
+    }
 
-    res.status(200).json({
-      reply: data.choices[0].message.content
+    /* ================= SYSTEM PROMPT ================= */
+    const systemPrompt = {
+      role: "system",
+      content: `
+You are the BioNurse Pro Website AI Consultant.
+
+Your role:
+- Understand what type of website or platform the user wants
+- Explain things clearly in simple English
+- Encourage users to contact Akin S. Sokpah on WhatsApp
+- NEVER give prices
+- NEVER pretend to finalize deals
+- Always guide to WhatsApp for next step
+
+WhatsApp Contact:
+https://wa.me/231777789356
+`
+    };
+
+    /* ================= OPENAI CALL ================= */
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [systemPrompt, ...messages],
+      temperature: 0.6,
+      max_tokens: 400
     });
-  } catch {
-    res.status(500).json({ error: "AI failed" });
+
+    const reply = completion.choices[0].message.content;
+
+    /* ================= RESPONSE ================= */
+    res.status(200).json({
+      reply,
+      whatsapp:
+        "https://wa.me/231777789356?text=Hello%20Akin%2C%20I%20came%20from%20BioNurse%20website."
+    });
+
+  } catch (error) {
+    console.error("AI ERROR:", error);
+
+    res.status(500).json({
+      error: "AI service unavailable"
+    });
   }
 }
