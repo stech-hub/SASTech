@@ -1,154 +1,129 @@
-/* =========================================================
-   BioNurse Pro – AI Assistant Frontend Logic
+/* =====================================================
+   BioNurse Pro – Frontend AI Controller
    Author: Akin S. Sokpah
-   Level: Advanced / Production-ready
-========================================================= */
+   Handles:
+   - AI chat
+   - UI behavior
+   - Error recovery
+   - WhatsApp fallback
+===================================================== */
 
-/* -------------------------
-   GLOBAL STATE
--------------------------- */
-let aiOpen = false;
-let conversationHistory = [];
+const aiBox = document.querySelector(".ai-box");
+const aiMessages = document.getElementById("aiMessages");
+const aiInput = document.getElementById("aiInput");
 
-/* -------------------------
-   TOGGLE AI BOX
--------------------------- */
+let isThinking = false;
+
+// Toggle assistant (if icon exists)
 function toggleAI() {
-  const aiBox = document.getElementById("aiBox");
-  aiOpen = !aiOpen;
-  aiBox.style.display = aiOpen ? "flex" : "none";
+  aiBox.classList.toggle("open");
 }
 
-/* -------------------------
-   DOM HELPERS
--------------------------- */
-function addMessage(sender, text) {
-  const messages = document.getElementById("aiMessages");
-
-  const msgDiv = document.createElement("div");
-  msgDiv.className = `ai-msg ${sender}`;
-  msgDiv.innerHTML = text.replace(/\n/g, "<br>");
-
-  messages.appendChild(msgDiv);
-  messages.scrollTop = messages.scrollHeight;
-}
-
-/* -------------------------
-   IMAGE PREVIEW
--------------------------- */
-function handleImagePreview(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    addMessage(
-      "user",
-      `<strong>📸 Uploaded Image:</strong><br><img src="${reader.result}" style="max-width:100%;border-radius:10px;margin-top:8px;" />`
-    );
-  };
-  reader.readAsDataURL(file);
-}
-
-/* -------------------------
-   SEND MESSAGE TO AI
--------------------------- */
+// Send message to AI
 async function sendAI() {
-  const input = document.getElementById("aiInput");
-  const imageInput = document.getElementById("aiImage");
+  const text = aiInput.value.trim();
+  if (!text || isThinking) return;
 
-  const userText = input.value.trim();
-  const imageFile = imageInput.files[0];
+  addMessage(text, "user");
+  aiInput.value = "";
+  isThinking = true;
 
-  if (!userText && !imageFile) return;
-
-  // Show user message
-  if (userText) {
-    addMessage("user", userText);
-    conversationHistory.push({ role: "user", content: userText });
-  }
-
-  // Handle image
-  if (imageFile) {
-    handleImagePreview(imageFile);
-  }
-
-  // Reset inputs
-  input.value = "";
-  imageInput.value = "";
-
-  // Typing indicator
-  addMessage("bot", "⏳ Thinking...");
+  const typingId = addTyping();
 
   try {
     const response = await fetch("/api/chat", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        messages: conversationHistory,
-        hasImage: !!imageFile
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
     });
-
-    if (!response.ok) {
-      throw new Error("Network error");
-    }
 
     const data = await response.json();
 
-    // Remove "Thinking..."
-    document.querySelector(".ai-msg.bot:last-child")?.remove();
+    removeTyping(typingId);
 
-    addMessage("bot", data.reply);
-
-    conversationHistory.push({
-      role: "assistant",
-      content: data.reply
-    });
-
-    // Auto WhatsApp Invite (when intent detected)
-    if (data.inviteWhatsapp) {
-      setTimeout(() => {
-        addMessage(
-          "bot",
-          `📲 <strong>Continue on WhatsApp:</strong><br>
-           <a href="https://wa.me/231777789356?text=Hello%20Akin%2C%20I%20want%20a%20website%20or%20platform."
-              target="_blank"
-              style="color:#1e90ff;font-weight:bold;">
-              Message Akin on WhatsApp
-           </a>`
-        );
-      }, 800);
+    if (!data.reply) {
+      throw new Error("No reply from AI");
     }
 
-  } catch (error) {
-    console.error(error);
+    addMessage(data.reply, "bot");
 
-    document.querySelector(".ai-msg.bot:last-child")?.remove();
-
+  } catch (err) {
+    removeTyping(typingId);
     addMessage(
-      "bot",
-      "⚠️ Sorry, I'm having trouble right now.<br>Please contact Akin on WhatsApp."
+      "⚠️ I'm having trouble right now. Please contact Akin on WhatsApp 👉 https://wa.me/231777789356",
+      "bot error"
     );
+  } finally {
+    isThinking = false;
   }
 }
 
-/* -------------------------
-   ENTER KEY SUPPORT
--------------------------- */
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Enter" && aiOpen) {
+// Add message bubble
+function addMessage(text, type) {
+  const msg = document.createElement("div");
+  msg.className = `ai-msg ${type}`;
+  msg.innerText = text;
+  aiMessages.appendChild(msg);
+  scrollDown();
+}
+
+// Typing indicator
+function addTyping() {
+  const typing = document.createElement("div");
+  typing.className = "ai-msg bot typing";
+  typing.innerHTML = "Sokpah AI is thinking<span>.</span><span>.</span><span>.</span>";
+  aiMessages.appendChild(typing);
+  scrollDown();
+  return typing;
+}
+
+function removeTyping(el) {
+  if (el) el.remove();
+}
+
+// Scroll chat down
+function scrollDown() {
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+
+// Enter key support
+aiInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
     sendAI();
   }
 });
 
-/* -------------------------
-   AUTO GREETING (ON LOAD)
--------------------------- */
+/* ==========================
+   Auto Greeting (once)
+========================== */
 window.addEventListener("load", () => {
   setTimeout(() => {
     addMessage(
-      "bot",
-      "💡 Tip: You can ask about BioNurse Pro or request a website. Upload a screenshot if you have a design idea."
+      "Hello 👋 I'm the BioNurse Pro assistant.\n\nI can help you understand the app or guide you if you want a website, store, or platform built.\n\n💡 Tip: You can tell me what you want and I’ll guide you professionally.",
+      "bot"
     );
-  }, 1200);
+  }, 800);
 });
+
+/* ==========================
+   Image Upload (UI-ready)
+   (Backend can be added later)
+========================== */
+function uploadImage(file) {
+  if (!file) return;
+  addMessage("📸 Image uploaded. Sokpah AI will review your design idea.", "user");
+  addMessage(
+    "Great! I see your design idea. I’ll analyze it and recommend the best structure, features, and pricing for your project.",
+    "bot"
+  );
+}
+
+/* ==========================
+   Safety fallback
+========================== */
+window.onerror = function () {
+  addMessage(
+    "⚠️ Something went wrong. Please message Akin on WhatsApp 👉 https://wa.me/231777789356",
+    "bot error"
+  );
+};
