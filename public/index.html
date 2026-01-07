@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ================= BASIC ================= -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -8,212 +9,191 @@
 
   <meta name="description" content="BioNurse Pro is a free nursing study app for nursing and healthcare students worldwide. Get nursing notes, quizzes, courses, certificates, scholarships, and AI consultant inside the app." />
 
-  <meta name="keywords" content="BioNurse Pro, nursing study app, free nursing app, nursing notes app, nursing quiz app, nursing students app, healthcare study app, medical study app" />
+  <meta name="keywords" content="BioNurse Pro, nursing study app, free nursing app, nursing notes app, nursing quiz app, nursing students app, healthcare study app, nursing education app, medical study app" />
 
-  <!-- Open Graph -->
+  <!-- ================= GOOGLE VERIFY ================= -->
+  <meta name="google-site-verification" content="Xph8kvaL-aAkTHe30pd74SqDHgdUFGDx7p3TLie_LTI" />
+
+  <!-- ================= OPEN GRAPH ================= -->
   <meta property="og:title" content="BioNurse Pro – Free Nursing Study App" />
   <meta property="og:description" content="Free nursing study app with notes, quizzes, courses, scholarships, certificates, and AI consultant inside the app." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bnp-website.vercel.app/" />
+  <meta property="og:image" content="https://bnp-website.vercel.app/public/images/bionurse-preview.png" />
 
-  <!-- Twitter -->
+  <!-- ================= TWITTER ================= -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="BioNurse Pro – Nursing Study App" />
   <meta name="twitter:description" content="Free nursing app for students worldwide." />
+  <meta name="twitter:image" content="https://bnp-website.vercel.app/public/images/bionurse-preview.png" />
 
   <link rel="stylesheet" href="style.css" />
+
+  <!-- ================= FAQ SCHEMA ================= -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is BioNurse Pro?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "BioNurse Pro is a free nursing study app for nursing and healthcare students worldwide. It includes notes, quizzes, courses, certificates, scholarships, and an AI consultant inside the app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is BioNurse Pro free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, BioNurse Pro is completely free for students."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the website have AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The AI consultant is available inside the BioNurse Pro mobile app only."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
 
-<!-- ================= NAVIGATION ================= -->
-<header class="navbar">
-  <div class="nav-container">
-    <h1 class="logo">BioNurse<span>Pro</span></h1>
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar">
+    <div class="nav-container">
+      <h1 class="logo">BioNurse<span>Pro</span></h1>
+      <a href="#download" class="nav-btn">Download App</a>
+    </div>
+  </header>
 
-    <nav class="nav-links">
-      <a href="#about">About</a>
-      <a href="#features">Features</a>
-      <a href="#ai">AI</a>
-      <a href="#resources">Resources</a>
-      <a href="#services">Services</a>
-      <a href="#download" class="nav-btn">Download</a>
-    </nav>
-  </div>
-</header>
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Smart Learning for Nursing Students</h2>
+      <p>
+        BioNurse Pro is an all-in-one nursing study app with notes, quizzes,
+        courses, certificates, scholarships, and an AI consultant inside the app.
+      </p>
 
-<!-- ================= HERO ================= -->
-<section class="hero">
-  <div class="hero-content">
-    <h1>Free Nursing Study App for Students Worldwide</h1>
+      <div class="hero-buttons">
+        <a href="https://github.com/stech-hub/bionurseapk-website/releases/download/v1/myapp.apk"
+           target="_blank"
+           class="btn-primary">
+          Download BioNurse Pro APK
+        </a>
 
-    <p>
-      BioNurse Pro is a modern nursing study app designed to help nursing and
-      healthcare students learn faster and smarter. It combines notes, quizzes,
-      courses, certificates, scholarships, and an AI nursing consultant
-      inside the mobile app.
+        <a href="https://whatsapp.com/channel/0029Vb6qja16buMAUsybF741"
+           target="_blank"
+           class="btn-outline">
+          Join WhatsApp Channel
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FEATURES ================= -->
+  <section class="section">
+    <h3>What BioNurse Pro Offers</h3>
+
+    <div class="grid">
+      <div class="card">
+        <h4>📘 Nursing Notes</h4>
+        <p>Well-organized, simplified nursing notes for students.</p>
+      </div>
+
+      <div class="card">
+        <h4>📝 Practice Quizzes</h4>
+        <p>Test knowledge, prepare for exams, and earn certificates.</p>
+      </div>
+
+      <div class="card">
+        <h4>🎓 Courses</h4>
+        <p>Structured nursing courses for academic success.</p>
+      </div>
+
+      <div class="card">
+        <h4>💰 Scholarships</h4>
+        <p>Access updated nursing scholarship opportunities.</p>
+      </div>
+
+      <div class="card highlight">
+        <h4>🤖 AI Consultant</h4>
+        <p>AI-powered nursing assistant available inside the mobile app.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SERVICES ================= -->
+  <section class="section glass">
+    <h3>Need a Website or Platform?</h3>
+
+    <p class="center-text">
+      I design professional websites for businesses, startups,
+      apps, and online platforms.
     </p>
 
-    <div class="hero-buttons">
-      <a href="https://github.com/stech-hub/bionurseapk-website/releases/download/v1/myapp.apk" target="_blank" class="btn-primary">
-        Download BioNurse Pro APK
+    <div class="grid">
+      <div class="card">
+        <h4>🌐 Business Websites</h4>
+        <p>Professional websites for companies and organizations.</p>
+      </div>
+
+      <div class="card">
+        <h4>🛒 Product & Store Sites</h4>
+        <p>Landing pages and product showcase websites.</p>
+      </div>
+
+      <div class="card">
+        <h4>📱 App & Platform Websites</h4>
+        <p>Websites for mobile apps and SaaS platforms.</p>
+      </div>
+
+      <div class="card highlight">
+        <h4>🎨 Custom Templates</h4>
+        <p>Clean, modern website templates tailored to your needs.</p>
+      </div>
+    </div>
+
+    <div class="center-text" style="margin-top: 30px;">
+      <a href="https://wa.me/231777789356?text=Hello%20Akin%2C%20I%20need%20a%20website."
+         target="_blank"
+         class="btn-primary big">
+        Message Akin on WhatsApp
       </a>
-
-      <a href="https://wa.me/231777789356" target="_blank" class="btn-outline">
-        Contact Developer
-      </a>
+      <p class="small">WhatsApp Business: <strong>akinssokpah007</strong></p>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ================= ABOUT ================= -->
-<section class="section" id="about">
-  <h2>About BioNurse Pro</h2>
+  <!-- ================= DOWNLOAD ================= -->
+  <section class="section center" id="download">
+    <h3>Download BioNurse Pro</h3>
+    <p>Free • Lightweight • Student-Friendly</p>
 
-  <p>
-    BioNurse Pro was created to support nursing education by providing
-    easy-to-access learning materials for students. The app focuses on
-    clarity, accuracy, and exam preparation.
-  </p>
-
-  <p>
-    It is used by nursing and healthcare students in Liberia, Africa,
-    and across the world who want reliable study tools without complexity.
-  </p>
-</section>
-
-<!-- ================= FEATURES ================= -->
-<section class="section" id="features">
-  <h2>BioNurse Pro App Features</h2>
-
-  <div class="grid">
-    <div class="card">
-      <h3>📘 Nursing Notes</h3>
-      <p>Well-structured and simplified nursing notes.</p>
-    </div>
-
-    <div class="card">
-      <h3>📝 Practice Quizzes</h3>
-      <p>Interactive quizzes with instant feedback.</p>
-    </div>
-
-    <div class="card">
-      <h3>🎓 Courses</h3>
-      <p>Step-by-step courses designed for students.</p>
-    </div>
-
-    <div class="card">
-      <h3>🏆 Certificates</h3>
-      <p>Certificates awarded after successful quizzes.</p>
-    </div>
-
-    <div class="card">
-      <h3>💰 Scholarships</h3>
-      <p>Access to free and verified scholarship programs.</p>
-    </div>
-
-    <div class="card highlight">
-      <h3>🤖 AI Consultant</h3>
-      <p>AI-powered assistance for nursing topics.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ================= AI SECTION ================= -->
-<section class="section glass" id="ai">
-  <h2>AI Nursing & Customer Consultant</h2>
-
-  <p>
-    BioNurse Pro includes an AI consultant designed to help students
-    understand nursing concepts faster and guide customers who want
-    websites, platforms, or digital solutions.
-  </p>
-
-  <p class="note">
-    The AI can answer questions, analyze needs, and connect users
-    directly to Akin via WhatsApp for further assistance.
-  </p>
-</section>
-
-<!-- ================= RESOURCES ================= -->
-<section class="section" id="resources">
-  <h2>Nursing Learning Resources</h2>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Nursing Study Guides</h3>
-      <p>Helpful guides for exams and clinical practice.</p>
-    </div>
-
-    <div class="card">
-      <h3>Clinical Procedures</h3>
-      <p>Step-by-step nursing procedures explained.</p>
-    </div>
-
-    <div class="card">
-      <h3>Exam Preparation</h3>
-      <p>Focused materials for nursing exams.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ================= SERVICES ================= -->
-<section class="section" id="services">
-  <h2>Web Development & Digital Services</h2>
-
-  <p class="center-text">
-    I design professional websites and platforms for businesses,
-    products, and startups.
-  </p>
-
-  <div class="grid">
-    <div class="card">
-      <h3>🌐 Business Websites</h3>
-      <p>Professional websites for companies.</p>
-    </div>
-
-    <div class="card">
-      <h3>🛒 Product Platforms</h3>
-      <p>Landing pages and online stores.</p>
-    </div>
-
-    <div class="card">
-      <h3>📱 App Websites</h3>
-      <p>Websites for mobile apps and platforms.</p>
-    </div>
-
-    <div class="card highlight">
-      <h3>🎨 Custom Templates</h3>
-      <p>Modern and reusable website templates.</p>
-    </div>
-  </div>
-
-  <div class="center">
-    <a href="https://wa.me/231777789356?text=Hello%20Akin%2C%20I%20need%20a%20website." target="_blank" class="btn-primary big">
-      Message Akin on WhatsApp
+    <a href="https://github.com/stech-hub/bionurseapk-website/releases/download/v1/myapp.apk"
+       target="_blank"
+       class="btn-primary big">
+      Download APK
     </a>
-  </div>
-</section>
 
-<!-- ================= DOWNLOAD ================= -->
-<section class="section center" id="download">
-  <h2>Download BioNurse Pro</h2>
-  <p>Free • Lightweight • Student Friendly</p>
+    <p class="small">Version 1.0 • ~7MB</p>
+  </section>
 
-  <a href="https://github.com/stech-hub/bionurseapk-website/releases/download/v1/myapp.apk" target="_blank" class="btn-primary big">
-    Download APK
-  </a>
-</section>
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <p>Developed by <strong>Akin S. Sokpah</strong> 🇱🇷</p>
+    <p>© 2026 BioNurse Pro. All rights reserved.</p>
+  </footer>
 
-<!-- ================= FOOTER ================= -->
-<footer class="footer">
-  <p>Developed by <strong>Akin S. Sokpah</strong> 🇱🇷</p>
-  <p>© 2026 BioNurse Pro. All rights reserved.</p>
-</footer>
+  <!-- ================= AI ASSISTANT ================= -->
+  <script src="script.js"></script>
 
-<!-- ================= AI ICON ================= -->
-<div id="assistantIcon" title="AI Assistant">🤖</div>
-
-<script src="script.js"></script>
 </body>
 </html>
