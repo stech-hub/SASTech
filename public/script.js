@@ -1,177 +1,294 @@
 /* =========================================================
-   BIO NURSE PRO – MAIN CLIENT SCRIPT
+   BioNurse Pro – Website AI Assistant Frontend
    Author: Akin S. Sokpah
-   Purpose: UX, AI Assistant, WhatsApp Integration
+   Purpose:
+   - Floating AI Assistant
+   - Chat UI
+   - Image upload (snaps of designs)
+   - Smart responses
+   - WhatsApp handoff
 ========================================================= */
 
 /* ================= GLOBAL STATE ================= */
-const AppState = {
-  assistantOpen: false,
-  messages: [],
-  userIntent: null
+
+const aiState = {
+  isOpen: false,
+  isTyping: false,
+  messages: [
+    {
+      role: "assistant",
+      content:
+        "Hello 👋 I'm the BioNurse Pro assistant. I can help you understand the app or guide you if you want a website or platform built."
+    }
+  ],
+  uploadedImages: []
 };
 
-/* ================= DOM ELEMENTS ================= */
-document.addEventListener("DOMContentLoaded", () => {
-  initAssistantIcon();
+/* ================= ELEMENT REFERENCES ================= */
+
+const aiIcon = document.createElement("div");
+const aiContainer = document.createElement("div");
+const aiHeader = document.createElement("div");
+const aiBody = document.createElement("div");
+const aiFooter = document.createElement("div");
+const aiInput = document.createElement("input");
+const aiSendBtn = document.createElement("button");
+const aiUploadBtn = document.createElement("input");
+
+/* ================= FLOATING ICON ================= */
+
+aiIcon.id = "ai-floating-icon";
+aiIcon.innerHTML = "🤖";
+document.body.appendChild(aiIcon);
+
+/* ================= AI CONTAINER ================= */
+
+aiContainer.id = "ai-container";
+aiContainer.classList.add("hidden");
+
+aiHeader.id = "ai-header";
+aiHeader.innerHTML = `
+  <span>🤖 BioNurse Assistant</span>
+  <button id="ai-close">✖</button>
+`;
+
+aiBody.id = "ai-body";
+
+aiFooter.id = "ai-footer";
+aiInput.type = "text";
+aiInput.placeholder = "Type your message...";
+aiSendBtn.textContent = "Send";
+
+aiUploadBtn.type = "file";
+aiUploadBtn.accept = "image/*";
+aiUploadBtn.id = "ai-upload";
+
+aiFooter.appendChild(aiUploadBtn);
+aiFooter.appendChild(aiInput);
+aiFooter.appendChild(aiSendBtn);
+
+aiContainer.appendChild(aiHeader);
+aiContainer.appendChild(aiBody);
+aiContainer.appendChild(aiFooter);
+document.body.appendChild(aiContainer);
+
+/* ================= UI STYLES (JS-INJECTED) ================= */
+
+const style = document.createElement("style");
+style.innerHTML = `
+#ai-floating-icon {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #1e90ff;
+  color: white;
+  font-size: 26px;
+  padding: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 15px 30px rgba(0,0,0,.3);
+  z-index: 9999;
+}
+
+#ai-container {
+  position: fixed;
+  bottom: 90px;
+  right: 25px;
+  width: 360px;
+  max-height: 520px;
+  background: #0f172a;
+  color: white;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+#ai-container.hidden {
+  display: none;
+}
+
+#ai-header {
+  padding: 14px;
+  background: #020617;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#ai-body {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.ai-msg {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  max-width: 85%;
+}
+
+.ai-user {
+  background: #1e293b;
+  align-self: flex-end;
+}
+
+.ai-bot {
+  background: #1e40af;
+  align-self: flex-start;
+}
+
+#ai-footer {
+  padding: 10px;
+  display: flex;
+  gap: 6px;
+  background: #020617;
+}
+
+#ai-footer input[type="text"] {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+#ai-footer button {
+  padding: 8px 12px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+`;
+document.head.appendChild(style);
+
+/* ================= RENDER MESSAGES ================= */
+
+function renderMessages() {
+  aiBody.innerHTML = "";
+  aiState.messages.forEach(msg => {
+    const div = document.createElement("div");
+    div.classList.add("ai-msg");
+    div.classList.add(msg.role === "user" ? "ai-user" : "ai-bot");
+    div.textContent = msg.content;
+    aiBody.appendChild(div);
+  });
+  aiBody.scrollTop = aiBody.scrollHeight;
+}
+
+/* ================= TOGGLE AI ================= */
+
+aiIcon.onclick = () => {
+  aiState.isOpen = !aiState.isOpen;
+  aiContainer.classList.toggle("hidden");
+  renderMessages();
+};
+
+document.getElementById("ai-close").onclick = () => {
+  aiState.isOpen = false;
+  aiContainer.classList.add("hidden");
+};
+
+/* ================= SEND MESSAGE ================= */
+
+async function sendMessage() {
+  const text = aiInput.value.trim();
+  if (!text) return;
+
+  aiState.messages.push({ role: "user", content: text });
+  aiInput.value = "";
+  renderMessages();
+
+  showTyping();
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: aiState.messages
+      })
+    });
+
+    const data = await res.json();
+
+    aiState.messages.push({
+      role: "assistant",
+      content: data.reply
+    });
+
+    if (data.whatsapp) {
+      aiState.messages.push({
+        role: "assistant",
+        content:
+          "👉 Continue on WhatsApp: " + data.whatsapp
+      });
+    }
+
+  } catch (err) {
+    aiState.messages.push({
+      role: "assistant",
+      content:
+        "⚠️ Sorry, I'm having trouble right now. Please contact Akin on WhatsApp."
+    });
+  }
+
+  hideTyping();
+  renderMessages();
+}
+
+/* ================= TYPING INDICATOR ================= */
+
+function showTyping() {
+  aiState.isTyping = true;
+  const typing = document.createElement("div");
+  typing.id = "typing";
+  typing.className = "ai-msg ai-bot";
+  typing.textContent = "Typing...";
+  aiBody.appendChild(typing);
+}
+
+function hideTyping() {
+  aiState.isTyping = false;
+  const t = document.getElementById("typing");
+  if (t) t.remove();
+}
+
+/* ================= IMAGE UPLOAD ================= */
+
+aiUploadBtn.onchange = () => {
+  const file = aiUploadBtn.files[0];
+  if (!file) return;
+
+  aiState.uploadedImages.push(file);
+
+  aiState.messages.push({
+    role: "user",
+    content:
+      "📸 I uploaded a design reference image for my website."
+  });
+
+  renderMessages();
+};
+
+/* ================= EVENTS ================= */
+
+aiSendBtn.onclick = sendMessage;
+aiInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
 });
 
-/* ================= AI ASSISTANT ICON ================= */
-function initAssistantIcon() {
-  const icon = document.getElementById("assistantIcon");
+/* ================= AUTO MESSAGE ================= */
 
-  if (!icon) return;
-
-  icon.addEventListener("click", () => {
-    toggleAssistant();
-  });
-}
-
-/* ================= TOGGLE ASSISTANT ================= */
-function toggleAssistant() {
-  let modal = document.getElementById("assistantModal");
-
-  if (!modal) {
-    modal = createAssistantModal();
-    document.body.appendChild(modal);
+setTimeout(() => {
+  if (!aiState.isOpen) {
+    aiState.messages.push({
+      role: "assistant",
+      content:
+        "💡 Tip: Click the 🤖 icon if you need help or want a website built."
+    });
   }
-
-  AppState.assistantOpen = !AppState.assistantOpen;
-  modal.style.display = AppState.assistantOpen ? "flex" : "none";
-}
-
-/* ================= CREATE ASSISTANT MODAL ================= */
-function createAssistantModal() {
-  const modal = document.createElement("div");
-  modal.id = "assistantModal";
-  modal.style.position = "fixed";
-  modal.style.inset = "0";
-  modal.style.background = "rgba(0,0,0,0.65)";
-  modal.style.display = "flex";
-  modal.style.alignItems = "center";
-  modal.style.justifyContent = "center";
-  modal.style.zIndex = "10000";
-
-  modal.innerHTML = `
-    <div class="assistant-box">
-      <div class="assistant-header">
-        <strong>BioNurse AI Consultant</strong>
-        <button id="closeAssistant">✕</button>
-      </div>
-
-      <div class="assistant-messages" id="assistantMessages">
-        <div class="assistant-message ai">
-          👋 Hello!  
-          Tell me what kind of website or platform you want.  
-          You can even upload screenshots.
-        </div>
-      </div>
-
-      <div class="assistant-input">
-        <input type="text" id="assistantInput" placeholder="Describe your project..." />
-        <button id="assistantSend">Send</button>
-      </div>
-
-      <div class="assistant-footer">
-        <small>Powered by BioNurse Pro</small>
-      </div>
-    </div>
-  `;
-
-  modal.querySelector("#closeAssistant").onclick = toggleAssistant;
-  modal.querySelector("#assistantSend").onclick = handleUserMessage;
-  modal.querySelector("#assistantInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") handleUserMessage();
-  });
-
-  return modal;
-}
-
-/* ================= HANDLE MESSAGE ================= */
-function handleUserMessage() {
-  const input = document.getElementById("assistantInput");
-  const message = input.value.trim();
-
-  if (!message) return;
-
-  appendMessage(message, "user");
-  input.value = "";
-
-  AppState.messages.push({ role: "user", content: message });
-
-  simulateAIResponse(message);
-}
-
-/* ================= APPEND MESSAGE ================= */
-function appendMessage(text, role) {
-  const box = document.getElementById("assistantMessages");
-  const msg = document.createElement("div");
-
-  msg.className = `assistant-message ${role}`;
-  msg.textContent = text;
-
-  box.appendChild(msg);
-  box.scrollTop = box.scrollHeight;
-}
-
-/* ================= AI LOGIC (FRONTEND SIMULATION) ================= */
-function simulateAIResponse(userText) {
-  setTimeout(() => {
-    let response = analyzeIntent(userText);
-    appendMessage(response, "ai");
-  }, 800);
-}
-
-/* ================= INTENT ANALYSIS ================= */
-function analyzeIntent(text) {
-  const lower = text.toLowerCase();
-
-  if (lower.includes("website") || lower.includes("business")) {
-    AppState.userIntent = "website";
-    return (
-      "Great 👍 I can help you plan a professional website.\n\n" +
-      "I will now connect you directly to Akin on WhatsApp for full discussion."
-    );
-  }
-
-  if (lower.includes("app")) {
-    AppState.userIntent = "app";
-    return (
-      "Nice idea 🚀 An app project needs proper planning.\n\n" +
-      "Let me connect you with Akin on WhatsApp now."
-    );
-  }
-
-  return (
-    "Thank you for your message 😊\n\n" +
-    "I understand your needs. I will connect you with Akin for detailed support."
-  );
-}
-
-/* ================= AUTO WHATSAPP REDIRECT ================= */
-function redirectToWhatsApp() {
-  const base = "https://wa.me/231777789356";
-  const text = encodeURIComponent(
-    "Hello Akin, I contacted you via the BioNurse website. I want help with a project."
-  );
-
-  window.open(`${base}?text=${text}`, "_blank");
-}
-
-/* ================= AUTO INVITE AFTER AI ================= */
-setInterval(() => {
-  if (AppState.userIntent && AppState.messages.length >= 2) {
-    redirectToWhatsApp();
-    AppState.userIntent = null;
-  }
-}, 4000);
-
-/* ================= FUTURE EXTENSIONS ================= */
-/*
-- OpenAI API call via /api/chat.js
-- Image upload
-- Conversation memory
-- Admin dashboard
-- Analytics hooks
-- Lead storage
-*/
+}, 6000);
