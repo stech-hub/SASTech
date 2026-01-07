@@ -1,3 +1,68 @@
+import OpenAI from "openai";
+
+/*
+====================================================
+ BioNurse Pro / Sokpah AI – Server API
+ Author: Akin S. Sokpah
+ Purpose:
+  - Smart AI assistant
+  - Persuade clients professionally
+  - Explain pricing clearly
+  - Guide payment steps
+  - Redirect to WhatsApp smoothly
+  - Stable Vercel deployment
+====================================================
+*/
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+// Website pricing data (editable)
+const PRICING = {
+  landing: {
+    name: "Landing Website",
+    price: "$80 – $150",
+    includes: "1–3 pages, mobile responsive, SEO, WhatsApp integration"
+  },
+  business: {
+    name: "Business Website",
+    price: "$200 – $400",
+    includes: "5–10 pages, admin panel, SEO, contact forms"
+  },
+  ecommerce: {
+    name: "Online Store",
+    price: "$350 – $700",
+    includes: "Product system, cart, payment setup, admin dashboard"
+  },
+  platform: {
+    name: "Custom Platform",
+    price: "$600 – $1500+",
+    includes: "User accounts, dashboards, APIs, AI integration"
+  }
+};
+
+// Payment instructions
+const PAYMENT_INFO = `
+💳 PAYMENT METHODS
+
+🏦 Bank Transfer:
+• Bank: United Bank Of Africa (UBA)
+• Country: Liberia
+• Account Number: 53020710015394
+• Account Name: Akin S. Sokpah
+
+📱 Mobile Money (MoMo):
+• Number: 0889183557
+• Name: Akin S. Sokpah
+
+📸 AFTER PAYMENT:
+Please send your payment screenshot to WhatsApp:
+👉 https://wa.me/231777789356
+
+Once confirmed, your project starts immediately.
+`;
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -7,73 +72,72 @@ export default async function handler(req, res) {
     const { message } = req.body;
 
     if (!message) {
-      return res.status(400).json({ error: "Message is required" });
+      return res.status(400).json({ reply: "Message is required." });
     }
 
     const systemPrompt = `
-You are the BioNurse Pro Business & Support AI.
+You are Sokpah AI, a professional AI assistant for BioNurse Pro.
 
-Your role:
-- Explain BioNurse Pro app features
-- Persuade users to build websites or platforms
-- Recommend prices confidently
-- Explain payment process clearly
-- Always sound professional, friendly, and convincing
+Your goals:
+- Help users understand BioNurse Pro
+- Convince serious clients to build websites/platforms
+- Explain services clearly
+- Recommend suitable pricing
+- Guide payment process politely
+- Invite users to WhatsApp when ready
+- Sound confident, friendly, African professional tone
+- NEVER mention OpenAI or API errors
 
-Pricing Guide (USD equivalent):
-- Simple business website: $50
-- App landing page: $70
-- Product/store website: $120
-- Custom platform: $250+
-- Full AI-powered system: $400+
+SERVICES & PRICES:
+${Object.values(PRICING).map(p =>
+`${p.name}: ${p.price} (${p.includes})`
+).join("\n")}
 
-Payment Methods:
-- Bank: United Bank of Africa Liberia
-  Account Number: 53020710015394
-  Name: Akin S. Sokpah
+PAYMENT INFO:
+${PAYMENT_INFO}
 
-- Mobile Money (MoMo):
-  Number: 0889183557
-  Name: Akin S. Sokpah
-
-After payment:
-- User must send payment screenshot to WhatsApp
-- WhatsApp: https://wa.me/231777789356
-- Project starts immediately after confirmation
-
-Always encourage WhatsApp contact politely.
+RULES:
+- Be persuasive but respectful
+- If user wants website → explain options → suggest best fit
+- If user asks price → show ranges, not exact unless asked
+- If user agrees → give payment instructions + WhatsApp link
+- If user is confused → educate calmly
 `;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: message },
-        ],
-        temperature: 0.7,
-      }),
-    );
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: message }
+      ],
+      temperature: 0.6,
+      max_tokens: 400
+    });
 
-    const data = await response.json();
+    let reply = completion.choices[0].message.content;
 
-    if (!data.choices || !data.choices[0]) {
-      throw new Error("Invalid OpenAI response");
+    // Auto WhatsApp invite if intent detected
+    if (
+      message.toLowerCase().includes("price") ||
+      message.toLowerCase().includes("website") ||
+      message.toLowerCase().includes("platform") ||
+      message.toLowerCase().includes("pay")
+    ) {
+      reply += `
+
+📲 Ready to move forward?
+Message Akin directly on WhatsApp:
+👉 https://wa.me/231777789356
+`;
     }
 
-    res.status(200).json({
-      reply: data.choices[0].message.content,
-    });
+    return res.status(200).json({ reply });
+
   } catch (error) {
     console.error("AI ERROR:", error);
-    res.status(500).json({
-      reply:
-        "⚠️ I'm currently unavailable. Please contact Akin directly on WhatsApp: https://wa.me/231777789356",
+
+    return res.status(200).json({
+      reply: "⚠️ I'm temporarily busy. Please contact Akin on WhatsApp 👉 https://wa.me/231777789356"
     });
   }
 }
